@@ -145,7 +145,8 @@ class mygameclass{
             tmpc--
             tmpr--
         }
-        var tmp=columnidx;
+        var tmpc=columnidx;
+        var tmpr=rowidx;
         while (tmpc<this.no_columns-1 & tmpr<this.no_rows-1 & cnt<=4 & color_to_check == this.get_div_by_index(Math.min(tmpr+1,this.no_rows-1),Math.min(tmpc+1,this.no_columns-1)).style.backgroundColor){
             cnt++
             tmpc++
