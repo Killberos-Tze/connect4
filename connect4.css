@@ -1,0 +1,25 @@
+body{
+    display: block;
+}
+
+.column{
+    display: block;
+    width: 32px;
+}
+
+#container{
+    display:flex;
+}
+
+#return{
+    margin-top: 10px;
+    height:30px;
+    width: 90px;
+    background-image: url("./images/go_back.png");
+}
+
+.field{
+    width: 30px;
+    height: 30px;
+    border:1px solid black;
+}
