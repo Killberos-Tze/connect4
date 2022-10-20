@@ -88,13 +88,9 @@ class mygameclass{
         document.getElementById(id).style.borderWidth='2px';
         document.getElementById(id).style.borderStyle='solid';
         document.getElementById(id).style.borderColor=this.color[this.user];
-        document.getElementById(id).style.paddingLeft='-2px';
-        document.getElementById(id).style.paddingTop='-2px';
     }
     demark_column(id){
         document.getElementById(id).style.borderWidth='0px';
-        document.getElementById(id).style.paddingLeft='0px';
-        document.getElementById(id).style.paddingTop='0px';
     }
 
     get_div_to_fill(className){
