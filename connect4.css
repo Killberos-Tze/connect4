@@ -3,11 +3,14 @@ body{
 }
 
 .column{
+    overflow: hidden; /* this prevents children to run out of parent box */
+    box-sizing: border-box;
     display: block;
-    width: 32px;
+    width: 30px;
 }
 
 #container{
+    box-sizing: border-box;
     display:flex;
 }
 
@@ -19,7 +22,9 @@ body{
 }
 
 .field{
+    box-sizing: border-box;
     width: 30px;
     height: 30px;
     border:1px solid black;
+    background-size: 100%;
 }

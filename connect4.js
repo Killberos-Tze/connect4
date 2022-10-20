@@ -45,14 +45,14 @@ class mygameclass{
     generate_divs(){
         let div = document.createElement("div");
         div.id = 'container';
-        div.style.height=(32*this.no_rows+5)+'px';
+        div.style.height=(30*this.no_rows+5)+'px';//5 is added to compensate for the border change
         document.body.appendChild(div);
 
         for (var ii=0;ii<=this.no_columns-1;ii++){
             let div = document.createElement("div");
             div.className = 'column';
             div.id=ii
-            div.style.height=(32*this.no_rows)+'px';
+            div.style.height=(30*this.no_rows)+'px';
             div.setAttribute("type", "button");
             div.setAttribute("onclick", "window.myglobal_a.main_insert(id)");
             div.setAttribute("onmouseover", "window.myglobal_a.mark_column(id)");
@@ -88,11 +88,13 @@ class mygameclass{
         document.getElementById(id).style.borderWidth='2px';
         document.getElementById(id).style.borderStyle='solid';
         document.getElementById(id).style.borderColor=this.color[this.user];
+        document.getElementById(id).style.paddingLeft='-2px';
+        document.getElementById(id).style.paddingTop='-2px';
     }
     demark_column(id){
         document.getElementById(id).style.borderWidth='0px';
-        document.getElementById(id).style.borderStyle='';
-        document.getElementById(id).style.borderColor='';
+        document.getElementById(id).style.paddingLeft='0px';
+        document.getElementById(id).style.paddingTop='0px';
     }
 
     get_div_to_fill(className){
@@ -121,6 +123,13 @@ class mygameclass{
         }
     }
 
+    sum(array){
+        var sum=0;
+        for (var i=0;i<array.length;i++){
+            sum=sum+array[i];
+        }
+        return sum
+    }
 
     check_win(id){
         var rowidx=parseInt(id.match(/^\d/))
@@ -131,6 +140,10 @@ class mygameclass{
                 if (!alert('User '+this.winner[color_to_check]+' has won.')){this.new_game()}//issues with alert in new version of firefox
                 })
             
+        }else if (this.sum(this.row_tracker)==0){
+            this.sleep(200).then(() => {
+                if (!alert('There is no winner.')){this.new_game()}//issues with alert in new version of firefox
+                })
         }
     }
 
@@ -217,7 +230,9 @@ class mygameclass{
         this.row_tracker[parseInt(id)]--;//I get to the row which I am filling in
         document.getElementById(this.row_tracker[parseInt(id)]+'_'+parseInt(id)).style.backgroundColor = this.color[this.user];//to pick up div that needs to change color
         this.user=(this.user+1)%2
-        document.getElementById(parseInt(id)).style.borderColor=this.color[this.user];
+        this.sleep(200).then(() => {
+            document.getElementById(parseInt(id)).style.borderColor=this.color[this.user];//a bit of delay
+            })
         //console.log(this.row)
         return 0
         }else{
