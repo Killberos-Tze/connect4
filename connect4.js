@@ -36,6 +36,7 @@ class mygameclass{
         this.winner[this.color[0]]='Red PLayer';
         this.winner[this.color[1]]='Blue Player';
         this.row_tracker=[];
+        this.imageclickbutton='url("./images/go_back_click.png")';
         for (var ii=0;ii<=this.no_columns-1;ii++){
             this.row_tracker.push(this.no_rows);//this way I am at the right field which I fill in
         };
@@ -79,7 +80,7 @@ class mygameclass{
 
     go_back(id){
         document.getElementById(id).style.backgroundImage=this.imageclickbutton;
-        this.sleep(100).then(() => {
+        this.sleep(200).then(() => {
             window.location.reload()
             })
     }
@@ -93,31 +94,6 @@ class mygameclass{
         document.getElementById(id).style.borderWidth='0px';
     }
 
-    get_div_to_fill(className){
-        var cur_column=document.getElementsByClassName(className)//current column class
-        return cur_column[this.row_tracker[className]]
-    }
-
-    get_div_by_classes(rowName,columnName){
-        var test = document.getElementsByClassName(rowName)
-        return test[0].getElementsByClassName(columnName)[0]
-    }
-
-    get_div_by_index(row,col){
-        var col_class=this.search_in_obj(this.column,col)
-        //console.log(col_class)
-        var row_class=this.search_in_obj(this.row,row)
-        //console.log(row_class)
-        return this.get_div_by_classes(row_class,col_class)
-    }
-
-    search_in_obj(obj,value){
-        for (let key in obj){
-            if (obj[key]==value){
-                return key
-            }
-        }
-    }
 
     sum(array){
         var sum=0;
@@ -126,12 +102,42 @@ class mygameclass{
         }
         return sum
     }
+    //image overlapping
+    mark_winning_combination(id_list,direction){
+        for (var item of id_list){
+            if (document.getElementById(item).style.backgroundImage==''){
+                document.getElementById(item).style.backgroundImage="url('./images/"+direction+".png')"
+            }else{
+                document.getElementById(item).style.backgroundImage=document.getElementById(item).style.backgroundImage+", url('./images/"+direction+".png')"
+            }
+            
+        }
+
+    }
 
     check_win(id){
+        var flag;
         var rowidx=parseInt(id.match(/^\d/))
         var columnidx=parseInt(id.match(/\d$/))
         var color_to_check = document.getElementById(id).style.backgroundColor;
-        if (this.check_h(rowidx,columnidx,color_to_check)==this.win_condition || this.check_v(rowidx,columnidx,color_to_check)==this.win_condition || this.check_D1(rowidx,columnidx,color_to_check)==this.win_condition ||this.check_D2(rowidx,columnidx,color_to_check)==this.win_condition ){
+        if (this.check_h(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+            flag=1
+            this.mark_winning_combination(this.check_h(rowidx,columnidx,color_to_check)[1],'horizontal')
+        }
+        if (this.check_v(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+            flag=1
+            this.mark_winning_combination(this.check_v(rowidx,columnidx,color_to_check)[1],'vertical')
+        }
+        if (this.check_D1(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+            flag=1
+            this.mark_winning_combination(this.check_D1(rowidx,columnidx,color_to_check)[1],'D_up')
+        }
+        if (this.check_D2(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+            flag=1
+            this.mark_winning_combination(this.check_D2(rowidx,columnidx,color_to_check)[1],'D_down')
+        }
+        
+        if (flag==1){
             this.sleep(200).then(() => {
                 if (!alert('User '+this.winner[color_to_check]+' has won.')){this.new_game()}//issues with alert in new version of firefox
                 })
@@ -150,47 +156,57 @@ class mygameclass{
     }
 
     check_h(rowidx,columnidx,check){
-        
         var tmpc=columnidx;
         var tmpr=rowidx;
+        var idlist=[]
+        idlist.push(tmpr+'_'+tmpc)
         var cnt=1;
         while (tmpc>0 & cnt<=this.win_condition & check == document.getElementById(tmpr+'_'+Math.max(tmpc-1,0)).style.backgroundColor){
             cnt++
             tmpc--
+            idlist.push(tmpr+'_'+tmpc)
         }
         var tmpc=columnidx;
         while (tmpc<this.no_columns-1 & cnt<=this.win_condition & check == document.getElementById(tmpr+'_'+Math.min(tmpc+1,this.no_columns-1)).style.backgroundColor){
             cnt++
             tmpc++
+            idlist.push(tmpr+'_'+tmpc)
         }
-        return cnt
+        return [cnt,idlist]
     }
 
 
     check_v(rowidx,columnidx,check){
         var tmpc=columnidx;
         var tmpr=rowidx;
+        var idlist=[]
+        idlist.push(tmpr+'_'+tmpc)
         var cnt=1;
         while (tmpr>0 & cnt<=this.win_condition & check == document.getElementById(Math.max(tmpr-1,0)+'_'+tmpc).style.backgroundColor){
             cnt++
             tmpr--
+            idlist.push(tmpr+'_'+tmpc)
         }
         var tmpr=rowidx;
         while (tmpr<this.no_rows-1 & cnt<=this.win_condition & check == document.getElementById(Math.min(tmpr+1,this.no_rows-1)+'_'+tmpc).style.backgroundColor){
             cnt++
             tmpr++
+            idlist.push(tmpr+'_'+tmpc)
         }
-        return cnt
+        return [cnt,idlist]
     }
 
     check_D1(rowidx,columnidx,check){
         var tmpc=columnidx;
         var tmpr=rowidx;
+        var idlist=[]
+        idlist.push(tmpr+'_'+tmpc)
         var cnt=1;
         while (tmpc>0 & tmpr>0 & cnt<=this.win_condition & check == document.getElementById(Math.max(tmpr-1,0)+'_'+Math.max(tmpc-1,0)).style.backgroundColor){
             cnt++
             tmpc--
             tmpr--
+            idlist.push(tmpr+'_'+tmpc)
         }
         var tmpc=columnidx;
         var tmpr=rowidx;
@@ -198,18 +214,22 @@ class mygameclass{
             cnt++
             tmpc++
             tmpr++
+            idlist.push(tmpr+'_'+tmpc)
         }
-        return cnt
+        return [cnt,idlist]
     }
 
     check_D2(rowidx,columnidx,check){
         var tmpc=columnidx;
         var tmpr=rowidx;
+        var idlist=[]
+        idlist.push(tmpr+'_'+tmpc)
         var cnt=1;
         while (tmpc>0 & tmpr<this.no_rows-1 & cnt<=this.win_condition & check == document.getElementById(Math.min(tmpr+1,this.no_rows-1)+'_'+Math.max(tmpc-1,0)).style.backgroundColor){
             cnt++
             tmpc--
             tmpr++
+            idlist.push(tmpr+'_'+tmpc)
         }
         var tmpc=columnidx;
         var tmpr=rowidx;
@@ -217,8 +237,9 @@ class mygameclass{
             cnt++
             tmpc++
             tmpr--
+            idlist.push(tmpr+'_'+tmpc)
         }
-        return cnt
+        return [cnt,idlist]
     }
 
     insert(id){
