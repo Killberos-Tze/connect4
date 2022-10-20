@@ -120,21 +120,25 @@ class mygameclass{
         var rowidx=parseInt(id.match(/^\d/))
         var columnidx=parseInt(id.match(/\d$/))
         var color_to_check = document.getElementById(id).style.backgroundColor;
-        if (this.check_h(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+        var res_h=this.check_h(rowidx,columnidx,color_to_check)
+        var res_v=this.check_v(rowidx,columnidx,color_to_check)
+        var res_D1=this.check_D1(rowidx,columnidx,color_to_check)
+        var res_D2=this.check_D2(rowidx,columnidx,color_to_check)
+        if (res_h[0]==this.win_condition){
             flag=1
-            this.mark_winning_combination(this.check_h(rowidx,columnidx,color_to_check)[1],'horizontal')
+            this.mark_winning_combination(res_h[1],'horizontal')
         }
-        if (this.check_v(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+        if (res_v[0]==this.win_condition){
             flag=1
-            this.mark_winning_combination(this.check_v(rowidx,columnidx,color_to_check)[1],'vertical')
+            this.mark_winning_combination(res_v[1],'vertical')
         }
-        if (this.check_D1(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+        if (res_D1[0]==this.win_condition){
             flag=1
-            this.mark_winning_combination(this.check_D1(rowidx,columnidx,color_to_check)[1],'D_up')
+            this.mark_winning_combination(res_D1[1],'D_up')
         }
-        if (this.check_D2(rowidx,columnidx,color_to_check)[0]==this.win_condition){
+        if (res_D2[0]==this.win_condition){
             flag=1
-            this.mark_winning_combination(this.check_D2(rowidx,columnidx,color_to_check)[1],'D_down')
+            this.mark_winning_combination(res_D2[1],'D_down')
         }
         
         if (flag==1){
