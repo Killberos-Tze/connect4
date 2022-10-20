@@ -79,8 +79,9 @@ class mygameclass{
 
     go_back(id){
         document.getElementById(id).style.backgroundImage=this.imageclickbutton;
-        this.sleep(100);
-        window.location.reload()
+        this.sleep(100).then(() => {
+            window.location.reload()
+            })
     }
 
     mark_column(id){
@@ -126,7 +127,10 @@ class mygameclass{
         var columnidx=parseInt(id.match(/\d$/))
         var color_to_check = document.getElementById(id).style.backgroundColor;
         if (this.check_h(rowidx,columnidx,color_to_check)==this.win_condition || this.check_v(rowidx,columnidx,color_to_check)==this.win_condition || this.check_D1(rowidx,columnidx,color_to_check)==this.win_condition ||this.check_D2(rowidx,columnidx,color_to_check)==this.win_condition ){
-            if (!alert('User '+this.winner[color_to_check]+' has won.')){this.new_game()}
+            this.sleep(200).then(() => {
+                if (!alert('User '+this.winner[color_to_check]+' has won.')){this.new_game()}//issues with alert in new version of firefox
+                })
+            
         }
     }
 
