@@ -37,6 +37,7 @@ class mygameclass{
         this.winner[this.color[1]]='Blue Player';
         this.row_tracker=[];
         this.imageclickbutton='url("./images/go_back_click.png")';
+        this.winimage='url("./images/win.png")';
         for (var ii=0;ii<=this.no_columns-1;ii++){
             this.row_tracker.push(this.no_rows);//this way I am at the right field which I fill in
         };
@@ -44,13 +45,13 @@ class mygameclass{
     }
 
     generate_divs(){
-        let div = document.createElement("div");
+        var div = document.createElement("div");
         div.id = 'container';
-        div.style.height=(30*this.no_rows+5)+'px';//5 is added to compensate for the border change
+        div.style.height=(30*this.no_rows)+'px';//5 is added to compensate for the border change
         document.body.appendChild(div);
 
         for (var ii=0;ii<=this.no_columns-1;ii++){
-            let div = document.createElement("div");
+            div = document.createElement("div");
             div.className = 'column';
             div.id=ii
             div.style.height=(30*this.no_rows)+'px';
@@ -59,18 +60,22 @@ class mygameclass{
             div.setAttribute("onmouseover", "window.myglobal_a.mark_column(id)");
             div.setAttribute("onmouseout", "window.myglobal_a.demark_column(id)");
             document.getElementById('container').appendChild(div);
+            div = document.createElement("div");
+            div.className = 'holder';
+            div.id='h'+ii
+            document.getElementById(ii).appendChild(div);
             for (var jj=0;jj<=this.no_rows-1;jj++){
-                let div = document.createElement("div");
+                div = document.createElement("div");
                 div.className = 'field';
                 div.id=jj+'_'+ii
-                document.getElementById(ii).appendChild(div);
+                document.getElementById('h'+ii).appendChild(div);
             }
         }
-        let divb= document.createElement("div");
-        divb.id='return';
-        divb.setAttribute("type", "button")
-        divb.setAttribute("onclick", "window.myglobal_a.go_back(id)")
-        document.body.appendChild(divb);
+        div= document.createElement("div");
+        div.id='return';
+        div.setAttribute("type", "button")
+        div.setAttribute("onclick", "window.myglobal_a.go_back(id)")
+        document.body.appendChild(div);
     }
 
         //not sure is it working
@@ -103,14 +108,9 @@ class mygameclass{
         return sum
     }
     //image overlapping
-    mark_winning_combination(id_list,direction){
+    mark_winning_combination(id_list){
         for (var item of id_list){
-            if (document.getElementById(item).style.backgroundImage==''){
-                document.getElementById(item).style.backgroundImage="url('./images/"+direction+".png')"
-            }else{
-                document.getElementById(item).style.backgroundImage=document.getElementById(item).style.backgroundImage+", url('./images/"+direction+".png')"
-            }
-            
+            document.getElementById(item).style.backgroundImage=this.winimage;
         }
 
     }
@@ -124,30 +124,30 @@ class mygameclass{
         var res_v=this.check_v(rowidx,columnidx,color_to_check)
         var res_D1=this.check_D1(rowidx,columnidx,color_to_check)
         var res_D2=this.check_D2(rowidx,columnidx,color_to_check)
-        if (res_h[0]==this.win_condition){
+        if (res_h[0]>=this.win_condition){
             flag=1
-            this.mark_winning_combination(res_h[1],'horizontal')
+            this.mark_winning_combination(res_h[1])
         }
-        if (res_v[0]==this.win_condition){
+        if (res_v[0]>=this.win_condition){
             flag=1
-            this.mark_winning_combination(res_v[1],'vertical')
+            this.mark_winning_combination(res_v[1])
         }
-        if (res_D1[0]==this.win_condition){
+        if (res_D1[0]>=this.win_condition){
             flag=1
-            this.mark_winning_combination(res_D1[1],'D_up')
+            this.mark_winning_combination(res_D1[1])
         }
-        if (res_D2[0]==this.win_condition){
+        if (res_D2[0]>=this.win_condition){
             flag=1
-            this.mark_winning_combination(res_D2[1],'D_down')
+            this.mark_winning_combination(res_D2[1])
         }
         
         if (flag==1){
-            this.sleep(200).then(() => {
+            this.sleep(100).then(() => {
                 if (!alert('User '+this.winner[color_to_check]+' has won.')){this.new_game()}//issues with alert in new version of firefox
                 })
             
         }else if (this.sum(this.row_tracker)==0){
-            this.sleep(200).then(() => {
+            this.sleep(100).then(() => {
                 if (!alert('There is no winner.')){this.new_game()}//issues with alert in new version of firefox
                 })
         }

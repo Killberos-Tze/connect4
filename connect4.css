@@ -9,6 +9,18 @@ body{
     width: 30px;
 }
 
+.column .holder{
+    width:100%;
+    height:100%;
+}
+
+.column:hover .holder{
+    margin-top: -2px;
+    margin-left: -2px;
+    margin-right: -2px;
+    margin-bottom: -2px;
+}
+
 #container{
     box-sizing: border-box;
     display:flex;
